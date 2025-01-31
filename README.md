@@ -18,6 +18,8 @@ I did also consider:
 + Encripted 433Mhz serial modules however Its unclear how multiple would work togeather, if diffrent brands would work togeather and if they have any handshak to confirm recipt of messages. Meshtastic has a range of devices and as a project does not seem to be going anywhere. 
 + LoraWan seems to be a more commercial solution and looking at the documenation it seemed like similar to Zigbee where I would be trying to shoehorn in a custom one of a kind device. This could be a compleatly wrong take; let me know if I am way off base here.
 
+For the gate controller I wanted to be able to command it to open, close, stop, explicity request its status (open, closed, closing, open, opening, unknown) and self report its status. Further I wanted to retain all its current functinality ##################
+
 
 # How it works
 There are four elements to make this work: configuring the meshtastic link, defining the message format, setting up the arduino hardware, writing the arduino software. 
@@ -25,12 +27,27 @@ There are four elements to make this work: configuring the meshtastic link, defi
 ## Meshtastic config
 This consists of a chanel called serial, this channel is setup on at least two nodes. 
 
-The first node which must have a network connection (WiFi or Ethernet) is setup for MQTT to your home automation MQTT server (Do not user a public MQTT server). The serial chanel is then setup to push and pull any message on this chanel to the defined MQTT topic.
+The first node which must have a network connection (WiFi or Ethernet) is setup for MQTT to your home automation MQTT server (Do not user a public MQTT server). The serial chanel is then setup to push and pull any message on this chanel to the defined MQTT topic; in the serial chanel config enable "uplink enabled" and "Downlink enabled".
 
 The second node and any other aditional nodes will have a real serial (as in Tx Rx baud etc) ports. These nodes will join the meshtastic serial chanel and will have the meshtastic Serial Module enabled in simple mode. This will push any messages recieved on the channel to the real serial port and vice versa. You effectivly now have a bi-directional serial link to a MQTT topic. 
+
+Aditional setup notes: 
++ Follow the meshtastic documentation for the inital setup; these instructions provided assume the regon is setup, device compatability is good etc.
++ My working setup was all done on firmware 2.5.11 (there are bugs in the serial moduel in version prior to this!!)
++ The chanel you use must be called "serial", this is a requirement of the serial module for meshtastic 
++ On the first node (the WiFi node) you will need to:
+  + In the MQTT config enable JSON output
+  + In the Lora config enable "OK to MQTT"
++ On the second node (with serial port) you will need to:
+  + In the Serial Config enable "serial enabled"
+  + In the Serial config set the correct RX (pico GPIO pin 9) and TX (pico GPIO pin 8) pin numbers
+  + In the Serial config set a sensable baud rate like 19200; you can probbly go faster but this will not be the bottle neck so why do it
+  + In the Serial config set the "serial mode" to SIMPLE
+  + In the Lora config enable "OK to MQTT"
 
 ## message format
 While I currnelly only have a single device I defined a simple format for the message that could enable multiple devices to talk on the link at once. Just prefix the message you would like to send with the target devices name, then write hte message. for example "Gate1:Open_cmd". The gate could then respond with "Gate1:Opening", "Gate1:Opened". You could also request updates with "Gate1:Ack_cmd" and the gate woudl respond with "Gate1:Opened". However this requies some logic in the source node to process and send these messages. 
 
 ## Arduino Hardware
+My gate controller is an "Automatic NES-24V3" it has multipel con
 
