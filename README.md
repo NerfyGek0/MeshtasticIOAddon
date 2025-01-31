@@ -54,14 +54,35 @@ While I currnelly only have a single device I defined a simple format for the me
 This format could be improved, something like <name>:<type>:<message> where type specifys shorthands for status or command message would be clear than appeding _cmd to the message for commands.  
 
 ## Arduino Hardware
-My gate controller is an "Automatic NES-24V3" it has multipel terminal connections to enable open, close, stop and peddestrial (only opens enough to let people walk in). While the controller does have feedback so it knows if its opened or closed it does not provides any terminals (in the documentaion) to share this with external hardware. However after looking at the actual PCB (second image) their is a white three wire plug on the right side of the board that connects to an "encoder" (this is what was written on it; this woring thrugh me a bit) thich turned out was just a 3 position switch. It took some probing with a multimeter and testing befor I figured out exacly how this switch interfaced to the gates micro controler. Turned out it was just a 5VDC signal with the third pin being ground. As this is the case the board I was designing enable the arduino to ease drop on these 5V signals (switch plugs into a bread board and bread board passed these signals to the arduino and another plug that conects back to the gate controllers PCB.  
+My gate controller is an "Automatic NES-24V3" it has multipel terminal connections to enable open, close, stop and peddestrial (only opens enough to let people walk in). While the controller does have feedback so it knows if its opened or closed it does not provides any terminals (in the documentaion) to share this with external hardware. However after looking at the actual PCB (second image) their is a white three wire plug on the right side of the board that connects to an "encoder" (this is what was written on it and this woring thrugh me a bit) thich turned out was just a 3 position switch. It took some probing with a multimeter and testing befor I figured out exacly how this switch interfaced to the gates micro controler. Turned out it was just a 5VDC signal on the first pin for gate open, second pin was gate closed with the third pin being ground. So I got the arduino to ease drop on these 5V signals by pluging the switch plug into a bread board and bread board passed these signals to the arduino and another plug that conects back to the gate controllers PCB.  
 
 Initally I used relays to interface to the terminals but found out that a transistor would would work just as well. 
-The first version that rea
+A 3.3V arduino board was being used at the start but I switched it to 5V so the posisition switch signals could be run direclly to the GPIO without any aditional level converting circuits; I was worried this might has some unfosceed impact on the gates micro controller seeing I did not have access to its schmatic. This meant that for the Tx pin on the 5V arduino to the 3.3V Rx pin of the pico required a pull down resistor (level converting), going the other way does not matter as its within the TTL voltage spec. 
+Initally I was using a standard 7805 5V voltage regulator however the 24VDC turned out to be more like 29VDC and even with a heat sync the regulator was getting to hot and shutting down; this killed my frist pico (rest in pico). I then got a fancy DC/DC 5V buck converter (TSR12450) this worked a treat. 
+In the inital first multi day tests I found that the meshtastic firmware could crash (Not sure what happened but it dropped off the mesh network) to combat this if the arduino does not recieve a message from MQTT (via the serial port) within 4 hours it will toggle the 3V3_EN (3.3V enable) pin on the pico running meshtastic effectilly power cyceling it; have not had this issue since. 
+
+The third and fourth image show the proto type bread board in fritzing and the final board. There was a plan to actually order a PCB but the breadboard version has been working for nearly 4 months now. In anycase fritzing files are included. 
 
 ![image](https://github.com/user-attachments/assets/f207e753-0c47-4cc2-9a4a-5414607ea0ea)
 
-![IMG_20241002_121954_341](https://github.com/user-attachments/assets/a0f389aa-78a5-4e52-931d-9678f0ed1b9e)
+<img src="https://github.com/user-attachments/assets/a0f389aa-78a5-4e52-931d-9678f0ed1b9e" width="700">
+
+![IMG_20241106_154830_127](https://github.com/user-attachments/assets/63a201b0-3b7d-4774-8bf2-de759c8a33ea)
+
+![IMG_20241107_122512_066(1)](https://github.com/user-attachments/assets/f72f3547-1ec2-4c53-96ef-894dc2d87198)
+
+## Arduino Software
+The arduino file contains code I was not plaining on shwoing anyone when I wrote it; please be nice. 
+
+This is only an example, any micro controller with a serial port could be used. 
+
+It does the following: 
++ check for and actions the commands open, close, stop, ped and ack
++ monitor the position pins and update the status of the gate as needed based on the combination of pins
++ Debounce the switch pins
++ Push the status to the second serial port for helpfull debugging
++ Meshhtastic watchdog
+
 
 
 
