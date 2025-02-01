@@ -12,12 +12,12 @@ I had been attempting to create a custom Zigbee module and device in Zigbee2MQTT
 The meshtastic firmware already has some modules that can acheve some of what I wanted but each had limitations:
 + The Remote Hardware Module built into meshtastic is cool and a good idea however I needed more GPIO than what was avaliable, I wanted to run some logic (scripts) at the node but this is not an option with this module. Finally the read, write and watch commands are all initated from other nodes; the source node cannot just broardcast when it sees an event.
 + The Canned Message Module was also intresting but was not enough for what I needed. 
-+ Modifying the Meshtastic firmware seemed like the next option however this would require I patch in my changes each time there is an update; my patch could become incompatible over time. I could contribut however this project is already doing a lot and its a chat app first; this seems a bit too custome and out of scope.
++ Modifying the Meshtastic firmware seemed like the next option however this would require I patch in my changes each time there is an update; my patch could become incompatible over time. I could contribut however as this is for one off custom devices its best being handeled by a seperate microcontroller. 
 
 I did also consider:
 + 433Mhz serial modules, however these are not encripted. 
-+ Encripted 433Mhz serial modules however Its unclear how multiple could work togeather, if diffrent brands would work togeather (if I needed to buy more in 2 years and the origional supplyer disappeared) and if they have any handshak to confirm recipt of messages. Meshtastic has a range of compatible devices and the project does not seem to be going anywhere. 
-+ LoraWan seems to be a more commercial solution and looking at the documenation it seemed like similar to Zigbee where I would be trying to shoehorn in a custom one of a kind device into a well defined ecosystem. This could be a compleatly wrong take; let me know if I am way off base here.
++ Encripted 433Mhz serial modules however these do not interface to MQTT and they typically dont confirm message recipt.
++ LoraWan seems quite meature looking at the documenation however it appears I would be in a similar situation to Zigbee where I would be trying to shoehorn in a custom one of a kind device into a well defined ecosystem.
 
 # My Personal Goal for this
 For the gate controller I wanted to be able to command it to open, close, stop, explicity request its status (open, closed, closing, open, opening, unknown) and self report its status when it changes. Further I wanted the gate to retain all its current functinality specifically all remotes needed to continue to work and if my hardware failed it was not to compromise the gates functions. 
