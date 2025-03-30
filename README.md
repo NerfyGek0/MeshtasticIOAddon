@@ -91,6 +91,8 @@ The Arduino file contain the code I used for my gate. I was not planing on showi
 
 Keep in mind is only an example, any micro controller with a serial port could be used.
 
+The bigest issue with this setup is anytime you want to make changes to the Arduino code it cannot be done remotly; I have to take the gate box apart and plug directly into the Arduino. 
+
 In any case unless you have a "Automatic NES-24V3" front gate you will likely need to heavily modify the code to fit your use case. Even if you have a "Automatic NES-24V3" it might have a light, gate buzzer or safety beams that you also want to control or get status updates on.
 
 The code does the following: 
