@@ -13,7 +13,9 @@ Depending on your use case a better path might be to use:
 + A LoraWan product
 + Customising the Meshtastic firmware (or contributing)
 + Just using the Meshtastic "Remote Hardware Module" to control any spare GPIO
-+ Or using a Shelly device with their "LORA add-on" clip on module (this looks cool). 
++ Or using a Shelly device with their "LORA add-on" clip on module (this looks cool).
+
+UPDATE: Also I found [Meshtastic-arduino](https://github.com/meshtastic/Meshtastic-arduino) while writing this up, it has better integration with Meshtastic (example [here](https://github.com/meshtastic/Meshtastic-arduino/blob/master/examples/SendReceiveClient/SendReceiveClient.ino)). Its also available in Arduino’s library manager check it out. It does not ramble on about how to intergate this with real hardware or how to setup the rest of Meshtastic like I do; might be a plus or not depending on your point of view. Note I have not actually used it, if I need to update my program however I will be looking into it.  
 
 # How it works
 The home automation monitors and sends commands to your devices via your self hosted MQTT server, Meshtastic forms a conduit between the MQTT server and the Arduino serial ports, the Arduino module monitors its serial port looking for messages prefixed with its name (discarding the rest); when a message that is prefixed with its name is detected by the Arduino it will act on the content of the message. Status messages can also be set by the Arduino as required back to the MQTT server self initiate or on request, these are also prefixed with the devices name for clarity.  
