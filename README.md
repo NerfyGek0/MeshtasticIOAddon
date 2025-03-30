@@ -1,7 +1,7 @@
 # MeshtasticSensors
 
 # Disclaimer 
-This is not a "it just works" solution by any stretch; it is however flexible, cheep and could be adapted to fit any weird use case that consumer products don’t have a solution for. Further this is more of a concept with a working example, unless you want to control the exact same hardware in the same situation I did you will need to heavily adapt my solution. Please follow your local laws, regulations and some common sense; I take no responsibility for any damage to property, equipment or persons from someone following the information contained in this repository. 
+This is not a "it just works" solution; it is however flexible, cheep and could be adapted to fit any weird use case that consumer products don’t have a solution for. Further this is more of a concept with a working example, unless you want to control the exact same hardware in the same situation I did you will need to heavily adapt my solution. Please follow your local laws, regulations and some common sense; I take no responsibility for any damage to property, equipment or persons from someone following the information contained in this repository. 
 
 # What is this?
 Instructions to create a MQTT controlled IO (input/output) board that can run its own logic at LoRa distances.  
