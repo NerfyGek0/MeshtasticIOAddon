@@ -69,6 +69,10 @@ The third and fourth image show the prototype bread board in fritzing and the fi
 
 ![IMG_20241107_122512_066(1)](https://github.com/user-attachments/assets/f72f3547-1ec2-4c53-96ef-894dc2d87198)
 
+![wiredUp](https://github.com/user-attachments/assets/83fa4a35-df86-48ab-a7fc-92fc6ba257e5)
+
+![gate](https://github.com/user-attachments/assets/0c76ed1c-2413-40e7-942a-bdfb882443aa)
+
 ## Arduino Software
 The Arduino file contain the code I used for my gate. I was not planing on showing anyone when I wrote it; please be nice. Ill clean up the comments and make is cleaner if I get time. I will also implement the clearer message format (<name>:<type>:<message>) also if time permits. That said its taken me way to long to get this repo going, so updates will not happen any time soon. 
 
