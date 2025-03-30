@@ -25,6 +25,19 @@ There are five elements to make this work: configuring the Meshtastic link, defi
 I wanted to control my front gate that is well outside of my WiFi and zigbee network. Specifically to be able to command it to open, close, stop, explicitly request its status (open, closed, closing, open, opening, unknown) and self report its status when it changes. Further I wanted the gate to retain all its current functionality specifically all of the gates native remotes (433MHz radio controls) needed to continue to work even if my hardware failed.
 I have tried to design this in such a way that multiple remote devices could be used however I am only using this for a single device (the gate) at the moment. 
 
+## Hardware
+Almost all this hardware could be switched out for some other micro controller, RaspberryPi or Meshtastic node you already have. I chose the Pro Micro and Raspberry Pi 4 as they where sitting in a draw. I chose the Rpi Picos as I had never used one before. Just make sure voltages are compatable and if they are running the Meshtastic firmware check project compatibility etc. 
+
+For the node at the gate I used: 
++ [Raspberry Pi Pico](https://littlebirdelectronics.com.au/products/raspberry-pi-pico-raspberry-pi-pico-without-headers?_pos=4&_sid=fc8a0820f&_ss=r) (dont use the Pico 2 as its not supported by Meshtastic at the time of writing)
++ [SX1262 LoRa Node Module for Raspberry Pi Pico](https://www.waveshare.com/pico-lora-sx1262-868m.htm)
++ [Pro Micro - 5V/16MHz](https://www.sparkfun.com/pro-micro-5v-16mhz.html)
+
+For the node connected to my LAN talking to the MQTT server: 
++ [Raspberry Pi 4 Model B (4 GB)](https://littlebirdelectronics.com.au/products/raspberry-pi-4-model-b-4-gb?_pos=18&_sid=83e4b0f0f&_ss=r)
++ [SX1262 LoRaWAN Node Module Expansion Board for Raspberry Pi](https://www.waveshare.com/sx1262-lorawan-hat.htm)
+
+
 ## Meshtastic config
 This consists of a Chanel called serial, this channel is setup on at least two nodes. 
 
