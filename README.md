@@ -43,7 +43,7 @@ This consists of a Chanel called serial, this channel is setup on at least two n
 
 The first node which must have a network connection (WiFi or Ethernet) is setup with MQTT to your home automation MQTT server (Do not user a public MQTT server). The serial Chanel is then setup to push and pull any message on this Chanel to the defined MQTT topic.
 
-The second node and any other additional nodes will have a real serial ports (as in two physical wires Tx and Rx and will run at a baud rate etc). These nodes will join the Meshtastic serial Chanel and will have the Meshtastic Serial Module enabled in simple mode. This will push any messages received on the channel to the real serial port and vice versa. You effectively now have a bi-directional link between the Arduino’s serial ports and a MQTT topic. 
+The second node and any other additional nodes will have a real serial ports (as in two physical wires Tx and Rx and will run at a baud rate etc). These nodes will join the Meshtastic serial Chanel and will have the Meshtastic Serial Module enabled in TEXTMSG mode. This will push any messages received on the channel to the real serial port and vice versa. You effectively now have a bi-directional link between the Arduino’s serial ports and a MQTT topic. 
 
 Additional setup notes: 
 + Follow the Meshtastic documentation for the initial setup; the below instructions assume the region is setup, device comparability is good, network (WiFi or LAN) has been configured, devices have names etc.
@@ -52,17 +52,19 @@ Additional setup notes:
 + On the first node (the WiFi node) you will need to:
   + In the MQTT config enable JSON output
   + In the Lora config enable "OK to MQTT"
+  + In the setting for the chanel called "serial" enable the "Uplink enabled" and "Downlink enabled"
 + On the second node (with serial port) you will need to:
   + In the device config set the role to "CLIENT MUTE" (if you know what your doing and your device is in a good location with a good antenna, then select a different mode other than CLIENT MUTE)
   + In the Serial Config enable "serial enabled"
   + In the Serial config set the correct RX (Pico GPIO pin 9) and TX (Pico GPIO pin 8) pin numbers
   + In the Serial config set a sensible baud rate like 19200; you can probably go faster but this will not be the bottle neck so why do it
-  + In the Serial config set the "serial mode" to SIMPLE
+  + In the Serial config set the "serial mode" to TEXTMSG
   + In the Lora config enable "OK to MQTT"
 
 ## message format
 While I currently only have a single device I defined a simple format for the message that could enable multiple devices to talk on the link at once. Just prefix the message you would like to send with the target devices name, then write the message. for example "Gate1:Open_cmd". The gate could then respond with "Gate1:Opening", "Gate1:Opened". You could also request updates with "Gate1:Ack_cmd" and the gate would respond with "Gate1:Opened". However this requires some logic in the source node to process and send these messages. 
 This format could be improved, something like <name>:<type>:<message> where type specifys shorthand for status or command message would be clear than appending _cmd to the message for commands.  
+With Meshtastic TEXTMSG mode is meant to prefix any messages sent out the serial port with the short name of the sending node, however in my testing the short name was always scrambled (corrupted text) followed by a colon and the complete message. I suspect this might be because the node that was sending the messages was a raspberry PI 5 running meshtrsticd which I dont think gets as much love; if you any other standard device like a PicoW this might work for you. 
 
 ## Arduino Hardware
 My gate controller is an "Automatic NES-24V3" it has multiple terminal connections to enable open, close, stop and pedestrian (only opens enough to let people walk in). The controller does have feedback so it knows if its opened or closed however it does not provides any terminals (in the documentation) to share this with external hardware. However after looking at the actual PCB (second image) their is a white three wire plug on the right side of the board that connects to an "encoder switch" (printed on the side of it) which is just a 3 position switch. It took some probing with a multi meter and testing before I figured out exactly how this switch interfaced to the gates micro controller. Turned out it was just a 5VDC signal on the first pin for gate open, second pin was gate closed with the third pin being ground. So I got the Arduino to ease drop on these 5V signals by plugging the switch plug into a bread board so the Arduino board can ease drop on the signals and another plug that connects back to the gate controllers PCB. 
