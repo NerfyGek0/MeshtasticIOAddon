@@ -63,7 +63,7 @@ Additional setup notes:
 
 ## message format
 While I currently only have a single device I defined a simple format for the message that could enable multiple devices to talk on the link at once. Just prefix the message you would like to send with the target devices name, then write the message. for example "Gate1:Open_cmd". The gate could then respond with "Gate1:Opening", "Gate1:Opened". You could also request updates with "Gate1:Ack_cmd" and the gate would respond with "Gate1:Opened". However this requires some logic in the source node to process and send these messages. 
-This format could be improved, something like <name>:<type>:<message> where type specifys shorthand for status or command message would be clear than appending _cmd to the message for commands.  
+This format could be improved, something like name:type:message where type specifys shorthand for status or command message would be clear than appending _cmd to the message for commands.  
 With Meshtastic TEXTMSG mode is meant to prefix any messages sent out the serial port with the short name of the sending node, however in my testing the short name was always scrambled (corrupted text) followed by a colon and the complete message. I suspect this might be because the node that was sending the messages was a raspberry PI 5 running meshtrsticd which I dont think gets as much love; if you any other standard device like a PicoW this might work for you. 
 
 ## Arduino Hardware
