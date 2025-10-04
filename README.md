@@ -47,12 +47,14 @@ The second node and any other additional nodes will have a real serial ports (as
 
 Additional setup notes: 
 + Follow the Meshtastic documentation for the initial setup; the below instructions assume the region is setup, device comparability is good, network (WiFi or LAN) has been configured, devices have names etc.
-+ My working setup was all done on firmware 2.5.11 (there are bugs in the serial module in version prior to this!!)
++ My working setup was all done on firmware 2.6.11 (and 2.5.11)
 + The Chanel you use must be called "serial", this is a requirement of the serial module for Meshtastic.
 + On the first node (the WiFi node) you will need to:
   + In the MQTT config enable JSON output
   + In the Lora config enable "OK to MQTT"
-  + In the setting for the chanel called "serial" enable the "Uplink enabled" and "Downlink enabled"
+  + In the channel settings create:
+    + A channel called "serial" enable the "Uplink enabled" and "Downlink enabled".
+    + A channel called "mqtt" enable the "Uplink enabled" and "Downlink enabled" (See Sending MQTT message to the mesh below)
 + On the second node (with serial port) you will need to:
   + In the device config set the role to "CLIENT MUTE" (if you know what your doing and your device is in a good location with a good antenna, then select a different mode other than CLIENT MUTE)
   + In the Serial Config enable "serial enabled"
@@ -60,6 +62,20 @@ Additional setup notes:
   + In the Serial config set a sensible baud rate like 19200; you can probably go faster but this will not be the bottle neck so why do it
   + In the Serial config set the "serial mode" to TEXTMSG
   + In the Lora config enable "OK to MQTT"
+
+## Sending MQTT messages to the Mesh
+Setting up a topic called 'mqtt' that we are not using seems stupid but it enables meshtastic to lissen on MQTT topic (root topic)/2/json/*mqtt*/(user id); more information [here](https://meshtastic.org/docs/software/integrations/mqtt/#json-downlink-to-instruct-a-node-to-send-a-message). Without this mqtt channel topic MQTT is read only.
+You want to format your jason like this: 
+```
+{
+  "payload": "gate1:ack",
+  "channel": <CHANEL NUMBER FOR CHANNEL 'serial'>,
+  "from": <YOUR NODE NUMBER HERE>,
+  "type": "sendtext"
+}
+```
+Make sure you add your node number your sending this from and modify the chanel to be the index of your serial chanel most likley '0'.
+I highly recomend [MQTT-Explorer](https://mqtt-explorer.com/) for monitoring MQTT on the fly. Very handy not having to manually subscribe while debuging. 
 
 ## message format
 While I currently only have a single device I defined a simple format for the message that could enable multiple devices to talk on the link at once. Just prefix the message you would like to send with the target devices name, then write the message. for example "Gate1:Open_cmd". The gate could then respond with "Gate1:Opening", "Gate1:Opened". You could also request updates with "Gate1:Ack_cmd" and the gate would respond with "Gate1:Opened". However this requires some logic in the source node to process and send these messages. 
